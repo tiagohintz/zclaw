@@ -11,6 +11,7 @@
 #include "http_gate.h"
 #include "boot_guard.h"
 #include "local_admin.h"
+#include "ble_prov.h"
 #include "nvs_keys.h"
 #include "messages.h"
 #include "gpio_policy.h"
@@ -111,6 +112,7 @@ static bool device_is_configured(void)
 #endif
 }
 
+#if !CONFIG_ZCLAW_BLE_PROVISIONING
 static void print_provisioning_help(void)
 {
     ESP_LOGE(TAG, "");
@@ -122,6 +124,7 @@ static void print_provisioning_help(void)
     ESP_LOGE(TAG, "Then restart the board.");
     ESP_LOGE(TAG, "");
 }
+#endif
 
 void app_main(void)
 {
@@ -267,9 +270,16 @@ void app_main(void)
             channel_write("\r\nSAFE MODE - local serial commands remain available.\r\n"
                           "Try /gpio, /diag, /reboot, /wifi, /bootcount, /factory-reset, /help, or /settings.\r\n\r\n");
         } else {
+#if CONFIG_ZCLAW_BLE_PROVISIONING
+            channel_write("\r\nDevice is not provisioned.\r\n"
+                          "Waiting for BLE provisioning from the companion app (service PROV_ZCLAW).\r\n"
+                          "Local serial commands remain available: /gpio, /diag, /reboot, /wifi, /bootcount, /factory-reset, /help, /settings.\r\n\r\n");
+            ble_prov_run();  // blocks; reboots after successful provisioning
+#else
             print_provisioning_help();
             channel_write("\r\nDevice is not provisioned.\r\n"
                           "Local serial commands remain available: /gpio, /diag, /reboot, /wifi, /bootcount, /factory-reset, /help, /settings.\r\n\r\n");
+#endif
         }
         while (1) {
             vTaskDelay(pdMS_TO_TICKS(5000));

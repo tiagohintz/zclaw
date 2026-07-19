@@ -1,5 +1,8 @@
 # zclaw
 
+> **Fork** de [tnm/zclaw](https://github.com/tnm/zclaw) com provisionamento BLE
+> via app companion — objetivo e contrato BLE em [docs/FORK.md](docs/FORK.md).
+
 <img
   src="docs/images/lobster_xiao_cropped_left.png"
   alt="Lobster soldering a Seeed Studio XIAO ESP32-C3"

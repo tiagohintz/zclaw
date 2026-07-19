@@ -38,8 +38,11 @@ idf_component_register(
         "boot_guard.c"
         "user_tools.c"
         "wifi_credentials.c"
+        "ble_prov.c"
     INCLUDE_DIRS "."
     REQUIRES
+        wifi_provisioning
+        bt
         nvs_flash
         esp_wifi
         esp_http_client
