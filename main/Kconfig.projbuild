@@ -19,6 +19,17 @@ menu "zclaw Configuration"
         help
             Anthropic API key fallback. Leave empty to use NVS provisioning.
 
+    config ZCLAW_BLE_PROVISIONING
+        bool "BLE provisioning via companion app when device is unprovisioned"
+        depends on BT_ENABLED
+        default y
+        help
+            When no WiFi credentials exist in NVS, start BLE provisioning
+            (service "PROV_ZCLAW") so the companion app can send WiFi
+            credentials plus device_id/LLM settings, then reboot.
+            Requires CONFIG_BT_ENABLED and CONFIG_BT_NIMBLE_ENABLED.
+            See docs/FORK.md for the BLE contract.
+
     config ZCLAW_ALLOW_UNENCRYPTED_NVS_FALLBACK
         bool "Allow unencrypted NVS fallback when flash encryption is enabled (dev only)"
         default n
