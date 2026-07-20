@@ -32,6 +32,25 @@ Template.Page_settings.helpers({
 });
 
 Template.Page_settings.events({
+  'click .js-reset-url'(event, instance) {
+    instance.busy.set(true);
+    instance.error.set(null);
+    instance.saved.set(false);
+    // Empty string tells the firmware to erase the override (provider default).
+    MeteorCallWrapper.call('devices.updateConfig', {
+      deviceId: instance.deviceId,
+      llmApiUrl: '',
+    })
+      .then(() => {
+        instance.busy.set(false);
+        instance.saved.set(true);
+      })
+      .catch((err) => {
+        instance.busy.set(false);
+        instance.error.set(err.reason || 'Não foi possível restaurar a URL.');
+      });
+  },
+
   'submit #settings-form'(event, instance) {
     event.preventDefault();
     const form = event.target;
@@ -45,6 +64,7 @@ Template.Page_settings.events({
       llmBackend: form.llmBackend.value || undefined,
       llmModel: form.llmModel.value || undefined,
       llmKey: form.llmKey.value || undefined,
+      llmApiUrl: form.llmApiUrl.value.trim() || undefined,
     })
       .then(() => {
         instance.busy.set(false);

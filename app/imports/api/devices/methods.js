@@ -40,12 +40,16 @@ Meteor.methods({
   // Edits settings of an already-connected board. `name` persists in Devices;
   // LLM fields are relayed to the board over websocket (never stored server-side)
   // and require the board to be online.
-  async 'devices.updateConfig'(token, { deviceId, name, llmBackend, llmKey, llmModel }) {
+  async 'devices.updateConfig'(token, { deviceId, name, llmBackend, llmKey, llmModel, llmApiUrl }) {
     check(deviceId, String);
     check(name, Match.Maybe(String));
     check(llmBackend, Match.Maybe(Match.OneOf(...LLM_BACKENDS)));
     check(llmKey, Match.Maybe(String));
     check(llmModel, Match.Maybe(String));
+    check(llmApiUrl, Match.Maybe(String));
+    if (llmApiUrl && !/^https?:\/\//.test(llmApiUrl.trim())) {
+      throw new Meteor.Error('invalid-url', 'A URL deve começar com http:// ou https://');
+    }
     if (!this.userId) throw new Meteor.Error('not-authorized');
 
     const device = await Devices.findOneAsync({ deviceId, userId: this.userId });
@@ -59,6 +63,8 @@ Meteor.methods({
     if (llmBackend) frame.llm_backend = llmBackend;
     if (llmKey && llmKey.trim()) frame.llm_key = llmKey.trim();
     if (llmModel && llmModel.trim()) frame.llm_model = llmModel.trim();
+    // llmApiUrl: undefined = keep; '' = revert to provider default; value = override.
+    if (llmApiUrl !== undefined) frame.llm_api_url = llmApiUrl.trim();
 
     if (Object.keys(frame).length > 1) {
       if (device.status !== 'online') throw new Meteor.Error('device-offline');

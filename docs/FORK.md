@@ -45,6 +45,7 @@ expõe e que o app deve implementar.
   "llm_key": "chave de API do provedor LLM",
   "llm_backend": "anthropic | openai | openrouter | ollama",
   "llm_model": "modelo (opcional, usa default do firmware se ausente)",
+  "llm_api_url": "URL customizada da API do LLM (opcional; vale para qualquer provedor)",
   "ws_url": "wss://servidor/device-ws (canal websocket do app; fase firmware pendente)",
   "ws_token": "credencial emitida por devices.create no servidor do app"
 }
@@ -64,8 +65,13 @@ Resposta do endpoint: `{"status":"ok"}`.
 | `llm_key` | `api_key` | `llm_init()` |
 | `llm_backend` | `llm_backend` | `llm_init()` |
 | `llm_model` | `llm_model` | `llm_init()` |
-| `ws_url` | `ws_url` | canal WS do firmware (a implementar) |
-| `ws_token` | `ws_token` | canal WS do firmware (a implementar) |
+| `llm_api_url` | `llm_api_url` | `llm_init()` — override da URL para qualquer provedor |
+| `ws_url` | `ws_url` | canal WS do firmware (`ws_channel.c`) |
+| `ws_token` | `ws_token` | canal WS do firmware (`ws_channel.c`) |
+
+Os mesmos campos de LLM (incluindo `llm_api_url`) também podem ser alterados
+depois, com a placa conectada, via frame websocket `{"type":"config", ...}` —
+string vazia apaga a chave (volta ao padrão do provedor).
 
 O app companion (Meteor 3 + Blaze + Cordova) vive em [`app/`](../app/README.md):
 broker websocket em `/device-ws`, collections `Devices`/`Messages`, plugin BLE

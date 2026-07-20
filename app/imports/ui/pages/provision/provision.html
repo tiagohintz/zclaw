@@ -38,6 +38,10 @@
           <span>Chave de API do provedor</span>
           <input type="password" name="llmKey" required placeholder="sk-…">
         </label>
+        <label class="field">
+          <span>URL da API <small>(opcional — padrão do provedor se vazio)</small></span>
+          <input type="url" name="llmApiUrl" placeholder="https://proxy.suaempresa.co/v1/messages">
+        </label>
 
         {{#if error}}<p class="form-error">{{error}}</p>{{/if}}
         {{#unless bleAvailable}}

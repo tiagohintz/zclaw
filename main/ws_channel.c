@@ -8,6 +8,7 @@
 #include "cJSON.h"
 #include "esp_crt_bundle.h"
 #include "llm.h"
+#include "nvs.h"
 #include "esp_log.h"
 #include "esp_websocket_client.h"
 #include "freertos/task.h"
@@ -108,20 +109,34 @@ static void handle_config_frame(const cJSON *json)
         { "llm_key",     NVS_KEY_API_KEY },
         { "llm_backend", NVS_KEY_LLM_BACKEND },
         { "llm_model",   NVS_KEY_LLM_MODEL },
+        { "llm_api_url", NVS_KEY_LLM_API_URL },
     };
 
     bool changed = false;
     bool failed = false;
     for (size_t i = 0; i < sizeof(field_map) / sizeof(field_map[0]); i++) {
         const cJSON *item = cJSON_GetObjectItem(json, field_map[i].field);
-        if (cJSON_IsString(item) && item->valuestring[0] != '\0') {
-            if (memory_set(field_map[i].nvs_key, item->valuestring) == ESP_OK) {
-                ESP_LOGI(TAG, "config: updated %s", field_map[i].field);
-                changed = true;
-            } else {
-                ESP_LOGE(TAG, "config: failed to store %s", field_map[i].field);
-                failed = true;
+        if (!cJSON_IsString(item)) {
+            continue;
+        }
+        // Empty string = clear the key (e.g. revert llm_api_url to the
+        // provider default). Absent field = keep current value.
+        esp_err_t err;
+        if (item->valuestring[0] == '\0') {
+            err = memory_delete(field_map[i].nvs_key);
+            if (err == ESP_ERR_NVS_NOT_FOUND) {
+                err = ESP_OK;
             }
+        } else {
+            err = memory_set(field_map[i].nvs_key, item->valuestring);
+        }
+        if (err == ESP_OK) {
+            ESP_LOGI(TAG, "config: %s %s",
+                     item->valuestring[0] == '\0' ? "cleared" : "updated", field_map[i].field);
+            changed = true;
+        } else {
+            ESP_LOGE(TAG, "config: failed to store %s", field_map[i].field);
+            failed = true;
         }
     }
 

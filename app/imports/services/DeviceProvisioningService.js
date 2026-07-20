@@ -25,7 +25,7 @@ const DeviceProvisioningService = {
    *          llmKey: string, llmBackend: string, llmModel?: string, wsUrl: string}} opts
    * @returns {Promise<{deviceId: string}>}
    */
-  async provision({ name, ssid, password, llmKey, llmBackend, llmModel, wsUrl }) {
+  async provision({ name, ssid, password, llmKey, llmBackend, llmModel, llmApiUrl, wsUrl }) {
     const { deviceId, wsToken } = await MeteorCallWrapper.call('devices.create', { name });
 
     const esp = plugin();
@@ -35,6 +35,7 @@ const DeviceProvisioningService = {
       llm_key: llmKey,
       llm_backend: llmBackend,
       ...(llmModel ? { llm_model: llmModel } : {}),
+      ...(llmApiUrl ? { llm_api_url: llmApiUrl } : {}),
       ws_url: wsUrl,
       ws_token: wsToken,
     });

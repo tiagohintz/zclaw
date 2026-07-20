@@ -37,6 +37,11 @@
           <span>Nova chave de API <small>(deixe vazio para manter)</small></span>
           <input type="password" name="llmKey" placeholder="sk-…" autocomplete="new-password">
         </label>
+        <label class="field">
+          <span>URL da API <small>(opcional — vazio mantém a atual)</small></span>
+          <input type="url" name="llmApiUrl" placeholder="https://proxy.suaempresa.co/v1/messages">
+        </label>
+        <button type="button" class="btn btn--ghost btn--sm js-reset-url">Restaurar URL padrão do provedor</button>
       </fieldset>
 
       {{#if error}}<p class="form-error">{{error}}</p>{{/if}}

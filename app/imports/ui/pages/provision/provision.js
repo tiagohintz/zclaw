@@ -39,6 +39,7 @@ Template.Page_provision.events({
         password: form.wifiPassword.value,
         llmKey: form.llmKey.value.trim(),
         llmBackend: form.llmBackend.value,
+        llmApiUrl: form.llmApiUrl.value.trim() || undefined,
         wsUrl: wsUrlFromServer(),
       });
       FlowRouter.go('/');
