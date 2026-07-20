@@ -18,11 +18,15 @@ const PING_INTERVAL_MS = 30000;
 
 const sockets = new Map(); // deviceId -> ws
 
-export function sendToDevice(deviceId, text) {
+export function sendFrameToDevice(deviceId, frame) {
   const ws = sockets.get(deviceId);
   if (!ws || ws.readyState !== ws.OPEN) return false;
-  ws.send(JSON.stringify({ type: 'msg', text }));
+  ws.send(JSON.stringify(frame));
   return true;
+}
+
+export function sendToDevice(deviceId, text) {
+  return sendFrameToDevice(deviceId, { type: 'msg', text });
 }
 
 async function setStatus(deviceId, status) {

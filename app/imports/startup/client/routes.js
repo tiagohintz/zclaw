@@ -6,6 +6,7 @@ import '/imports/ui/pages/login/login.js';
 import '/imports/ui/pages/devices/devices.js';
 import '/imports/ui/pages/provision/provision.js';
 import '/imports/ui/pages/chat/chat.js';
+import '/imports/ui/pages/settings/settings.js';
 
 function requireLogin(context, redirect) {
   if (!Meteor.userId() && !Meteor.loggingIn()) {
@@ -33,6 +34,14 @@ FlowRouter.route('/provision', {
   triggersEnter: [requireLogin],
   action() {
     this.render('Layout', { page: 'Page_provision' });
+  },
+});
+
+FlowRouter.route('/device/:deviceId/settings', {
+  name: 'settings',
+  triggersEnter: [requireLogin],
+  action(params) {
+    this.render('Layout', { page: 'Page_settings', deviceId: params.deviceId });
   },
 });
 

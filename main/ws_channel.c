@@ -7,6 +7,7 @@
 #include <string.h>
 #include "cJSON.h"
 #include "esp_crt_bundle.h"
+#include "llm.h"
 #include "esp_log.h"
 #include "esp_websocket_client.h"
 #include "freertos/task.h"
@@ -21,6 +22,8 @@ static const char *TAG = "ws_channel";
 typedef struct {
     char text[WS_MAX_OUT_LEN];
 } ws_out_msg_t;
+
+static void handle_config_frame(const cJSON *json);
 
 static esp_websocket_client_handle_t s_client;
 static QueueHandle_t s_input_queue;
@@ -76,6 +79,8 @@ static void handle_frame(const char *data, size_t len)
     if (cJSON_IsString(type) && strcmp(type->valuestring, "auth_ok") == 0) {
         s_authed = true;
         ESP_LOGI(TAG, "authenticated with app server");
+    } else if (cJSON_IsString(type) && strcmp(type->valuestring, "config") == 0) {
+        handle_config_frame(json);
     } else if (cJSON_IsString(type) && strcmp(type->valuestring, "msg") == 0) {
         const cJSON *text = cJSON_GetObjectItem(json, "text");
         if (cJSON_IsString(text) && text->valuestring[0] != '\0' && s_input_queue) {
@@ -89,6 +94,52 @@ static void handle_frame(const char *data, size_t len)
         }
     }
     cJSON_Delete(json);
+}
+
+// App-pushed settings update: {"type":"config","llm_backend"?,"llm_key"?,"llm_model"?}
+// Values land in the same NVS keys BLE provisioning uses; llm_init() re-reads
+// them so the change applies without reboot. Replies with config_ok/config_err.
+static void handle_config_frame(const cJSON *json)
+{
+    static const struct {
+        const char *field;
+        const char *nvs_key;
+    } field_map[] = {
+        { "llm_key",     NVS_KEY_API_KEY },
+        { "llm_backend", NVS_KEY_LLM_BACKEND },
+        { "llm_model",   NVS_KEY_LLM_MODEL },
+    };
+
+    bool changed = false;
+    bool failed = false;
+    for (size_t i = 0; i < sizeof(field_map) / sizeof(field_map[0]); i++) {
+        const cJSON *item = cJSON_GetObjectItem(json, field_map[i].field);
+        if (cJSON_IsString(item) && item->valuestring[0] != '\0') {
+            if (memory_set(field_map[i].nvs_key, item->valuestring) == ESP_OK) {
+                ESP_LOGI(TAG, "config: updated %s", field_map[i].field);
+                changed = true;
+            } else {
+                ESP_LOGE(TAG, "config: failed to store %s", field_map[i].field);
+                failed = true;
+            }
+        }
+    }
+
+    if (changed) {
+        // ponytail: llm_init() re-reads NVS on the ws task; a request already
+        // in flight on the agent task may fail once during the swap.
+        esp_err_t err = llm_init();
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "config: llm re-init failed: %s", esp_err_to_name(err));
+            failed = true;
+        }
+    }
+
+    cJSON *reply = cJSON_CreateObject();
+    if (reply) {
+        cJSON_AddStringToObject(reply, "type", failed ? "config_err" : "config_ok");
+        send_json(reply);
+    }
 }
 
 static void ws_event_handler(void *arg, esp_event_base_t base, int32_t event_id, void *event_data)
