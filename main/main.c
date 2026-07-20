@@ -270,6 +270,12 @@ void app_main(void)
             channel_write("\r\nSAFE MODE - local serial commands remain available.\r\n"
                           "Try /gpio, /diag, /reboot, /wifi, /bootcount, /factory-reset, /help, or /settings.\r\n\r\n");
         } else {
+            // Waiting for provisioning is a healthy state: clear the boot
+            // counter after the stable window, or repeated power cycles of an
+            // unprovisioned device would land it in safe mode.
+            if (xTaskCreate(clear_boot_count, "boot_ok", BOOT_OK_TASK_STACK_SIZE, NULL, 1, NULL) != pdPASS) {
+                ESP_LOGE(TAG, "Failed to create boot confirmation task");
+            }
 #if CONFIG_ZCLAW_BLE_PROVISIONING
             channel_write("\r\nDevice is not provisioned.\r\n"
                           "Waiting for BLE provisioning from the companion app (service PROV_ZCLAW).\r\n"
