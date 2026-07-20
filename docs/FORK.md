@@ -44,7 +44,9 @@ expõe e que o app deve implementar.
   "device_id": "identificador do dispositivo no ecossistema do app",
   "llm_key": "chave de API do provedor LLM",
   "llm_backend": "anthropic | openai | openrouter | ollama",
-  "llm_model": "modelo (opcional, usa default do firmware se ausente)"
+  "llm_model": "modelo (opcional, usa default do firmware se ausente)",
+  "ws_url": "wss://servidor/device-ws (canal websocket do app; fase firmware pendente)",
+  "ws_token": "credencial emitida por devices.create no servidor do app"
 }
 ```
 
@@ -62,6 +64,12 @@ Resposta do endpoint: `{"status":"ok"}`.
 | `llm_key` | `api_key` | `llm_init()` |
 | `llm_backend` | `llm_backend` | `llm_init()` |
 | `llm_model` | `llm_model` | `llm_init()` |
+| `ws_url` | `ws_url` | canal WS do firmware (a implementar) |
+| `ws_token` | `ws_token` | canal WS do firmware (a implementar) |
+
+O app companion (Meteor 3 + Blaze + Cordova) vive em [`app/`](../app/README.md):
+broker websocket em `/device-ws`, collections `Devices`/`Messages`, plugin BLE
+em `app/plugins/`.
 
 ### Sequência
 

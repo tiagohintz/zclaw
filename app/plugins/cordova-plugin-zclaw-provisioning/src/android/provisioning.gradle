@@ -1,0 +1,7 @@
+// Espressif provisioning SDK for Android.
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+dependencies {
+    implementation 'com.github.espressif:esp-idf-provisioning-android:lib-2.2.2'
+}
