@@ -1,0 +1,35 @@
+<template name="Page_login">
+  <main class="login">
+    <div class="login__glow"></div>
+    <header class="login__brand">
+      <span class="brand-mark">zclaw</span>
+      <span class="brand-by">por <strong>azape</strong></span>
+    </header>
+
+    <section class="login__card">
+      <h1>{{#if isRegistering}}Criar conta{{else}}Bem-vindo de volta{{/if}}</h1>
+      <p class="login__hint">Seu assistente de IA num ESP32, no ritmo do seu negócio.</p>
+
+      <form class="stack" id="login-form">
+        <label class="field">
+          <span>E-mail</span>
+          <input type="email" name="email" autocomplete="email" required placeholder="voce@empresa.co">
+        </label>
+        <label class="field">
+          <span>Senha</span>
+          <input type="password" name="password" autocomplete="current-password" required minlength="6" placeholder="••••••••">
+        </label>
+
+        {{#if error}}<p class="form-error">{{error}}</p>{{/if}}
+
+        <button type="submit" class="btn btn--primary btn--block" disabled="{{#if busy}}disabled{{/if}}">
+          {{#if busy}}Aguarde…{{else}}{{#if isRegistering}}Cadastrar{{else}}Entrar{{/if}}{{/if}}
+        </button>
+      </form>
+
+      <button type="button" class="btn btn--ghost btn--block js-toggle-mode">
+        {{#if isRegistering}}Já tenho conta{{else}}Criar uma conta{{/if}}
+      </button>
+    </section>
+  </main>
+</template>

@@ -99,6 +99,9 @@ static esp_err_t custom_data_handler(uint32_t session_id, const uint8_t *inbuf, 
         { "llm_key",     NVS_KEY_API_KEY },
         { "llm_backend", NVS_KEY_LLM_BACKEND },
         { "llm_model",   NVS_KEY_LLM_MODEL },
+        { "llm_api_url", NVS_KEY_LLM_API_URL },
+        { "ws_url",      NVS_KEY_WS_URL },
+        { "ws_token",    NVS_KEY_WS_TOKEN },
     };
 
     for (size_t i = 0; i < sizeof(field_map) / sizeof(field_map[0]); i++) {

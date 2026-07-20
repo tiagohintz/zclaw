@@ -1,0 +1,57 @@
+<template name="Page_provision">
+  <main class="page page--narrow">
+    <header class="topbar">
+      <a href="/" class="btn btn--ghost btn--sm">‹ Cancelar</a>
+      <h1 class="topbar__title">Conectar placa</h1>
+    </header>
+
+    {{#if provisioning}}
+      <section class="prov-progress">
+        <div class="spinner spinner--lg"></div>
+        <h2>{{stepLabel}}</h2>
+        <p>Mantenha a placa ligada e o celular por perto.</p>
+      </section>
+    {{else}}
+      <form class="stack" id="prov-form">
+        <label class="field">
+          <span>Nome da placa</span>
+          <input type="text" name="name" required placeholder="Ex.: Escritório">
+        </label>
+        <label class="field">
+          <span>Rede WiFi (2.4 GHz)</span>
+          <input type="text" name="ssid" required placeholder="Nome da rede">
+        </label>
+        <label class="field">
+          <span>Senha do WiFi</span>
+          <input type="password" name="wifiPassword" required placeholder="••••••••">
+        </label>
+        <label class="field">
+          <span>Provedor de IA</span>
+          <select name="llmBackend">
+            <option value="anthropic" selected>Anthropic (Claude)</option>
+            <option value="openai">OpenAI</option>
+            <option value="openrouter">OpenRouter</option>
+            <option value="ollama">Ollama</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Chave de API do provedor</span>
+          <input type="password" name="llmKey" required placeholder="sk-…">
+        </label>
+        <label class="field">
+          <span>URL da API <small>(opcional — base tipo /v1 ou completa; padrão do provedor se vazio)</small></span>
+          <input type="url" name="llmApiUrl" placeholder="https://ai.azape.dev/v1">
+        </label>
+
+        {{#if error}}<p class="form-error">{{error}}</p>{{/if}}
+        {{#unless bleAvailable}}
+          <p class="form-error">Bluetooth disponível apenas no app instalado no celular.</p>
+        {{/unless}}
+
+        <button type="submit" class="btn btn--primary btn--block" disabled="{{#unless bleAvailable}}disabled{{/unless}}">
+          Buscar e conectar via Bluetooth
+        </button>
+      </form>
+    {{/if}}
+  </main>
+</template>

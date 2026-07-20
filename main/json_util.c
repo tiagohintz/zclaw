@@ -59,6 +59,8 @@ static char *build_anthropic_request(
 
     if (!cJSON_AddStringToObject(root, "model", llm_get_model()) ||
         !cJSON_AddNumberToObject(root, "max_tokens", LLM_MAX_TOKENS) ||
+        // Explicit: zclaw cannot parse SSE; some gateways default to streaming.
+        !cJSON_AddBoolToObject(root, "stream", false) ||
         !cJSON_AddStringToObject(root, "system", system_prompt)) {
         goto fail;
     }
@@ -274,7 +276,9 @@ static char *build_openai_request(
     }
 
     if (!cJSON_AddStringToObject(root, "model", llm_get_model()) ||
-        !add_token_limit_field(root)) {
+        !add_token_limit_field(root) ||
+        // Explicit: zclaw cannot parse SSE; some gateways default to streaming.
+        !cJSON_AddBoolToObject(root, "stream", false)) {
         goto fail;
     }
 

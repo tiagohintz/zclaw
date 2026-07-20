@@ -1,0 +1,55 @@
+<template name="Page_settings">
+  <main class="page page--narrow">
+    <header class="topbar">
+      <a href="/chat/{{deviceId}}" class="btn btn--ghost btn--sm">‹ Voltar</a>
+      <h1 class="topbar__title">Configurações</h1>
+    </header>
+
+    <div class="settings-device">
+      <span class="device-card__status device-card__status--{{device.status}}"></span>
+      <strong>{{device.name}}</strong>
+      <small>{{statusLabel device.status}}</small>
+    </div>
+
+    <form class="stack" id="settings-form">
+      <label class="field">
+        <span>Nome da placa</span>
+        <input type="text" name="name" value="{{device.name}}" required>
+      </label>
+
+      <fieldset class="field-group" disabled="{{#unless online}}disabled{{/unless}}">
+        <legend>Inteligência artificial {{#unless online}}<small>(placa offline — reconecte para editar)</small>{{/unless}}</legend>
+        <label class="field">
+          <span>Provedor</span>
+          <select name="llmBackend">
+            <option value="">— manter atual —</option>
+            <option value="anthropic">Anthropic (Claude)</option>
+            <option value="openai">OpenAI</option>
+            <option value="openrouter">OpenRouter</option>
+            <option value="ollama">Ollama</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Modelo <small>(opcional)</small></span>
+          <input type="text" name="llmModel" placeholder="ex.: claude-haiku-4-5">
+        </label>
+        <label class="field">
+          <span>Nova chave de API <small>(deixe vazio para manter)</small></span>
+          <input type="password" name="llmKey" placeholder="sk-…" autocomplete="new-password">
+        </label>
+        <label class="field">
+          <span>URL da API <small>(opcional — base ou completa; vazio mantém a atual)</small></span>
+          <input type="url" name="llmApiUrl" placeholder="https://ai.azape.dev/v1">
+        </label>
+        <button type="button" class="btn btn--ghost btn--sm js-reset-url">Restaurar URL padrão do provedor</button>
+      </fieldset>
+
+      {{#if error}}<p class="form-error">{{error}}</p>{{/if}}
+      {{#if saved}}<p class="form-success">Configurações aplicadas na placa ✓</p>{{/if}}
+
+      <button type="submit" class="btn btn--primary btn--block" disabled="{{#if busy}}disabled{{/if}}">
+        {{#if busy}}Aplicando…{{else}}Salvar{{/if}}
+      </button>
+    </form>
+  </main>
+</template>

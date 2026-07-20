@@ -1,0 +1,10 @@
+{
+  "name": "cordova-plugin-zclaw-provisioning",
+  "version": "0.1.0",
+  "description": "BLE provisioning for zclaw boards (Espressif esp-idf-provisioning wrapper)",
+  "cordova": {
+    "id": "cordova-plugin-zclaw-provisioning",
+    "platforms": ["android", "ios"]
+  },
+  "license": "MIT"
+}

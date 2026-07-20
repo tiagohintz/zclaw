@@ -444,6 +444,40 @@ static esp_err_t http_event_handler(esp_http_client_event_t *evt)
 }
 #endif
 
+static bool str_ends_with(const char *s, const char *suffix)
+{
+    size_t slen = strlen(s);
+    size_t xlen = strlen(suffix);
+    return slen >= xlen && strcmp(s + slen - xlen, suffix) == 0;
+}
+
+// llm_api_url accepts either a full endpoint URL or a gateway base URL
+// (e.g. "https://ai.azape.dev/v1"). Bases get the backend's endpoint path
+// appended: /messages (Anthropic format) or /chat/completions (OpenAI format).
+static void normalize_api_url_override(void)
+{
+    if (s_api_url_override[0] == '\0') {
+        return;
+    }
+
+    size_t len = strlen(s_api_url_override);
+    while (len > 0 && s_api_url_override[len - 1] == '/') {
+        s_api_url_override[--len] = '\0';
+    }
+
+    if (str_ends_with(s_api_url_override, "/chat/completions") ||
+        str_ends_with(s_api_url_override, "/messages")) {
+        return; // already a full endpoint URL
+    }
+
+    const char *path = (s_backend == LLM_BACKEND_ANTHROPIC) ? "/messages" : "/chat/completions";
+    if (len + strlen(path) < sizeof(s_api_url_override)) {
+        strcat(s_api_url_override, path);
+    } else {
+        ESP_LOGW(TAG, "llm_api_url too long to append %s; using as-is", path);
+    }
+}
+
 esp_err_t llm_init(void)
 {
     // Load backend type from NVS
@@ -494,10 +528,11 @@ esp_err_t llm_init(void)
 
     s_api_url_override[0] = '\0';
     memory_get(NVS_KEY_LLM_API_URL, s_api_url_override, sizeof(s_api_url_override));
+    normalize_api_url_override();
 
     ESP_LOGI(TAG, "Backend: %s, Model: %s", llm_backend_name(s_backend), s_model);
     if (s_api_url_override[0] != '\0') {
-        ESP_LOGI(TAG, "Using custom LLM API endpoint override");
+        ESP_LOGI(TAG, "Using custom LLM API endpoint: %s", s_api_url_override);
     } else if (s_backend == LLM_BACKEND_OLLAMA) {
         ESP_LOGW(TAG, "Ollama backend using default loopback URL; set llm_api_url for network access");
     }

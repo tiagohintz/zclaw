@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="cordova-plugin-zclaw-provisioning" version="0.1.0">
+  <name>zclaw BLE Provisioning</name>
+  <description>Thin wrapper over Espressif esp-idf-provisioning SDKs for zclaw boards.</description>
+  <license>MIT</license>
+
+  <js-module src="www/EspProvisioning.js" name="EspProvisioning">
+    <clobbers target="EspProvisioning" />
+  </js-module>
+
+  <platform name="android">
+    <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="ZclawProvisioning">
+        <param name="android-package" value="co.azape.zclaw.ZclawProvisioning" />
+      </feature>
+    </config-file>
+    <config-file target="AndroidManifest.xml" parent="/manifest">
+      <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+      <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+      <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    </config-file>
+    <source-file src="src/android/ZclawProvisioning.java"
+                 target-dir="src/co/azape/zclaw" />
+    <framework src="src/android/provisioning.gradle" custom="true" type="gradleReference" />
+  </platform>
+
+  <platform name="ios">
+    <config-file target="config.xml" parent="/*">
+      <feature name="ZclawProvisioning">
+        <param name="ios-package" value="ZclawProvisioning" />
+      </feature>
+    </config-file>
+    <config-file target="*-Info.plist" parent="NSBluetoothAlwaysUsageDescription">
+      <string>Bluetooth é usado para configurar sua placa zclaw.</string>
+    </config-file>
+    <source-file src="src/ios/ZclawProvisioning.swift" />
+    <podspec>
+      <config>
+        <source url="https://cdn.cocoapods.org/" />
+      </config>
+      <pods use-frameworks="true">
+        <pod name="ESPProvision" spec="~> 3.0" />
+      </pods>
+    </podspec>
+  </platform>
+</plugin>

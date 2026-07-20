@@ -15,6 +15,8 @@
 #define NVS_KEY_TIMEZONE     "timezone"
 #define NVS_KEY_PERSONA      "persona"
 #define NVS_KEY_DEVICE_ID    "device_id"
+#define NVS_KEY_WS_URL       "ws_url"
+#define NVS_KEY_WS_TOKEN     "ws_token"
 
 // Rate-limit bookkeeping keys.
 #define NVS_KEY_RL_DAILY     "rl_daily"

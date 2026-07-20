@@ -1,0 +1,34 @@
+<template name="Page_chat">
+  <main class="page page--chat">
+    <header class="topbar">
+      <a href="/" class="btn btn--ghost btn--sm">‹ Placas</a>
+      <div class="topbar__device">
+        <span class="device-card__status device-card__status--{{device.status}}"></span>
+        <strong>{{device.name}}</strong>
+      </div>
+      <a href="/device/{{device.deviceId}}/settings" class="btn btn--ghost btn--sm" title="Configurações">⚙</a>
+    </header>
+
+    <section class="chat" id="chat-scroll">
+      {{#if loading}}
+        <div class="empty"><div class="spinner"></div></div>
+      {{else}}
+        {{#each messages}}
+          <div class="bubble bubble--{{direction}}">
+            <p>{{text}}</p>
+          </div>
+        {{else}}
+          <div class="empty empty--chat">
+            <p>Diga um oi para a sua placa 👋</p>
+          </div>
+        {{/each}}
+      {{/if}}
+    </section>
+
+    <form class="composer" id="chat-form">
+      <input type="text" name="text" placeholder="{{composerPlaceholder}}" autocomplete="off"
+             disabled="{{#unless canSend}}disabled{{/unless}}">
+      <button type="submit" class="btn btn--primary btn--send" disabled="{{#unless canSend}}disabled{{/unless}}">➤</button>
+    </form>
+  </main>
+</template>
