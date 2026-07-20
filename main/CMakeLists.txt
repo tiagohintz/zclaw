@@ -39,6 +39,7 @@ idf_component_register(
         "user_tools.c"
         "wifi_credentials.c"
         "ble_prov.c"
+        "ws_channel.c"
     INCLUDE_DIRS "."
     REQUIRES
         wifi_provisioning

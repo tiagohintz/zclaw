@@ -47,15 +47,19 @@ meteor run android-device
 ```
 
 O plugin em `plugins/cordova-plugin-zclaw-provisioning/` expõe
-`window.EspProvisioning` (connect/sendCustomData/sendWifi). **A camada nativa
-ainda é stub** — implementar sobre os SDKs oficiais da Espressif
-(instruções nos TODOs de `src/android/` e `src/ios/`).
+`window.EspProvisioning` (connect/sendCustomData/sendWifi). A camada nativa
+Android usa o SDK oficial `esp-idf-provisioning-android` (build validado);
+a iOS usa o pod `ESPProvision` (compilar exige assinatura/Xcode).
 
-## Pendências (em ordem)
+## Estado
 
-1. Camada nativa do plugin BLE (Android primeiro; a placa já responde ao
-   protocolo — validada com o app oficial da Espressif).
-2. Canal websocket no firmware (C): conectar em `ws_url` com
-   `deviceId`+`ws_token` vindos do BLE — campos já previstos no contrato.
-3. UI (login, lista de devices, fluxo de provisionamento, chat) — usar o skill
-   meteor-blaze-site.
+- Firmware: canal websocket implementado (`main/ws_channel.c`) e validado em
+  hardware — placa autentica no broker, troca mensagens e executa tools.
+- UI (Meteor 3.5 + Blaze, identidade Azape): login/cadastro, lista de placas
+  com status ao vivo, wizard de provisionamento BLE e chat reativo.
+- E2E validado: UI → método → broker → ESP32 → agente → resposta → UI.
+
+## Pendências
+
+1. Testar o fluxo BLE do app num telefone físico (`meteor run android-device`).
+2. Assinatura/publicação (keystore Android, provisioning profile iOS).

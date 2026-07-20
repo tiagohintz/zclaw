@@ -1,7 +1,8 @@
-// Espressif provisioning SDK for Android.
+// Espressif provisioning SDK for Android (+ EventBus used for its connection events).
 repositories {
     maven { url 'https://jitpack.io' }
 }
 dependencies {
-    implementation 'com.github.espressif:esp-idf-provisioning-android:lib-2.2.2'
+    implementation 'com.github.espressif:esp-idf-provisioning-android:lib-2.4.4'
+    implementation 'org.greenrobot:eventbus:3.3.1'
 }

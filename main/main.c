@@ -12,6 +12,7 @@
 #include "boot_guard.h"
 #include "local_admin.h"
 #include "ble_prov.h"
+#include "ws_channel.h"
 #include "nvs_keys.h"
 #include "messages.h"
 #include "gpio_policy.h"
@@ -312,6 +313,14 @@ void app_main(void)
         startup_err = telegram_start(input_queue, telegram_output_queue);
         if (startup_err != ESP_OK) {
             fail_fast_startup("telegram_start", startup_err);
+        }
+    }
+
+    // 13b. Start companion-app websocket channel (needs ws_url/ws_token/device_id in NVS)
+    if (ws_channel_is_configured()) {
+        startup_err = ws_channel_start(input_queue);
+        if (startup_err != ESP_OK) {
+            ESP_LOGW(TAG, "websocket channel failed to start: %s", esp_err_to_name(startup_err));
         }
     }
 

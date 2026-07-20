@@ -1,0 +1,40 @@
+<template name="Page_devices">
+  <main class="page">
+    <header class="topbar">
+      <div>
+        <span class="brand-mark brand-mark--sm">zclaw</span>
+        <h1 class="topbar__title">Suas placas</h1>
+      </div>
+      <button type="button" class="btn btn--ghost btn--sm js-logout">Sair</button>
+    </header>
+
+    {{#if loading}}
+      <div class="empty"><div class="spinner"></div></div>
+    {{else}}
+      {{#if devices.length}}
+        <ul class="device-list">
+          {{#each devices}}
+            <li class="device-card" data-device-id="{{deviceId}}">
+              <a href="/chat/{{deviceId}}" class="device-card__link">
+                <span class="device-card__status device-card__status--{{status}}"></span>
+                <div class="device-card__info">
+                  <strong>{{name}}</strong>
+                  <small>{{statusLabel status}}</small>
+                </div>
+                <span class="device-card__chev">›</span>
+              </a>
+            </li>
+          {{/each}}
+        </ul>
+      {{else}}
+        <div class="empty">
+          <div class="empty__art">⌁</div>
+          <h2>Nenhuma placa ainda</h2>
+          <p>Conecte sua primeira placa zclaw por Bluetooth em poucos passos.</p>
+        </div>
+      {{/if}}
+    {{/if}}
+
+    <a href="/provision" class="btn btn--primary btn--fab">+ Conectar placa</a>
+  </main>
+</template>

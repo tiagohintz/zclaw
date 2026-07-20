@@ -12,6 +12,9 @@
 #include "memory.h"
 #include "nvs_keys.h"
 #include "telegram.h"
+#ifndef TEST_BUILD
+#include "ws_channel.h"
+#endif
 #include "cJSON.h"
 #include "esp_timer.h"
 #include "esp_log.h"
@@ -176,6 +179,9 @@ static void send_response(const char *text, int64_t chat_id)
 {
     queue_channel_response(text);
     queue_telegram_response(text, chat_id);
+#ifndef TEST_BUILD
+    ws_channel_send(text); // no-op when the websocket channel is not running
+#endif
 }
 
 #ifndef TEST_BUILD

@@ -1,0 +1,343 @@
+// zclaw companion — identidade Azape
+// coral #F0917C sobre dark #1f2128, Nunito Sans, botões pill.
+
+:root {
+  --coral: #f0917c;
+  --coral-strong: #eb7a61;
+  --ink: #1f2128;
+  --ink-2: #262932;
+  --ink-3: #2f333e;
+  --paper: #f7f5f2;
+  --text: #f2efec;
+  --text-dim: #a7a9b3;
+  --ok: #7ccf9a;
+  --danger: #de4f4f;
+  --radius: 18px;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--ink);
+  color: var(--text);
+  font-family: 'Nunito Sans', system-ui, sans-serif;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-shell { min-height: 100dvh; }
+
+h1, h2 { font-weight: 900; letter-spacing: -0.01em; margin: 0; }
+
+// ---------- marca ----------
+.brand-mark {
+  font-weight: 900;
+  font-size: 1.6rem;
+  color: var(--text);
+  position: relative;
+  &::after {
+    // o "sorriso" da azape, aninhado no topo do "z"
+    content: '';
+    position: absolute;
+    top: -0.32em;
+    left: 0.02em;
+    width: 0.5em;
+    height: 0.26em;
+    border-radius: 0 0 1em 1em;
+    border: 0.12em solid var(--coral);
+    border-top: none;
+  }
+  &--sm { font-size: 1.05rem; }
+}
+.brand-by {
+  display: block;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  strong { color: var(--coral); font-weight: 900; }
+}
+
+// ---------- botões ----------
+.btn {
+  appearance: none;
+  border: none;
+  font: inherit;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.85rem 1.6rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: transform 150ms var(--ease-out), background-color 150ms ease;
+
+  &:active { transform: scale(0.97); }
+  &:disabled { opacity: 0.45; pointer-events: none; }
+
+  &--primary {
+    background: var(--coral);
+    color: #2b1712;
+    @media (hover: hover) and (pointer: fine) {
+      &:hover { background: var(--coral-strong); }
+    }
+  }
+  &--ghost {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1.5px solid var(--ink-3);
+    @media (hover: hover) and (pointer: fine) {
+      &:hover { color: var(--text); border-color: var(--text-dim); }
+    }
+  }
+  &--block { width: 100%; }
+  &--sm { padding: 0.45rem 1rem; font-size: 0.9rem; }
+  &--fab {
+    position: fixed;
+    left: 50%;
+    bottom: calc(1.25rem + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    box-shadow: 0 10px 30px rgba(240, 145, 124, 0.35);
+    &:active { transform: translateX(-50%) scale(0.97); }
+  }
+}
+
+// ---------- páginas ----------
+.page {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 1.25rem 1.25rem 6.5rem;
+  &--narrow { max-width: 440px; }
+  &--chat {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    padding-bottom: 0;
+  }
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0 1.25rem;
+  &__title { font-size: 1.35rem; margin-top: 0.15rem; }
+  &__device { display: flex; align-items: center; gap: 0.5rem; }
+}
+
+// ---------- login ----------
+.login {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  max-width: 420px;
+  margin: 0 auto;
+  position: relative;
+
+  &__glow {
+    position: fixed;
+    inset: -30% -30% auto;
+    height: 60vh;
+    background: radial-gradient(ellipse at 30% 20%, rgba(240, 145, 124, 0.18), transparent 60%);
+    pointer-events: none;
+  }
+  &__brand { margin-bottom: 2rem; }
+  &__card {
+    background: var(--ink-2);
+    border: 1px solid var(--ink-3);
+    border-radius: calc(var(--radius) + 6px);
+    padding: 1.75rem 1.5rem;
+    h1 { font-size: 1.5rem; margin-bottom: 0.35rem; }
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 250ms var(--ease-out), transform 250ms var(--ease-out);
+    @starting-style { opacity: 0; transform: translateY(10px); }
+  }
+  &__hint { color: var(--text-dim); margin: 0 0 1.5rem; font-size: 0.95rem; }
+}
+
+// ---------- forms ----------
+.stack { display: flex; flex-direction: column; gap: 1rem; }
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  span { font-size: 0.85rem; font-weight: 700; color: var(--text-dim); }
+  input, select {
+    font: inherit;
+    color: var(--text);
+    background: var(--ink);
+    border: 1.5px solid var(--ink-3);
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    outline: none;
+    transition: border-color 150ms ease;
+    &:focus { border-color: var(--coral); }
+    &::placeholder { color: #5c5f6b; }
+  }
+}
+
+.form-error { color: var(--danger); font-size: 0.9rem; margin: 0; }
+
+// ---------- lista de devices ----------
+.device-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.device-card {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: card-in 250ms var(--ease-out) forwards;
+  &:nth-child(1) { animation-delay: 0ms; }
+  &:nth-child(2) { animation-delay: 40ms; }
+  &:nth-child(3) { animation-delay: 80ms; }
+  &:nth-child(4) { animation-delay: 120ms; }
+  &:nth-child(n+5) { animation-delay: 160ms; }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    background: var(--ink-2);
+    border: 1px solid var(--ink-3);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+    color: inherit;
+    text-decoration: none;
+    transition: transform 150ms var(--ease-out), border-color 150ms ease;
+    &:active { transform: scale(0.98); }
+    @media (hover: hover) and (pointer: fine) {
+      &:hover { border-color: var(--coral); }
+    }
+  }
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    strong { font-weight: 800; }
+    small { color: var(--text-dim); }
+  }
+  &__chev { color: var(--text-dim); font-size: 1.4rem; }
+  &__status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--text-dim);
+    flex-shrink: 0;
+    &--online {
+      background: var(--ok);
+      box-shadow: 0 0 0 0 rgba(124, 207, 154, 0.6);
+      animation: pulse 2s infinite;
+    }
+    &--offline { background: var(--danger); }
+  }
+}
+
+@keyframes card-in { to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(124, 207, 154, 0.5); }
+  70% { box-shadow: 0 0 0 8px rgba(124, 207, 154, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(124, 207, 154, 0); }
+}
+
+// ---------- vazio / loading ----------
+.empty {
+  text-align: center;
+  color: var(--text-dim);
+  padding: 4rem 1rem;
+  &__art { font-size: 3rem; color: var(--coral); }
+  h2 { color: var(--text); margin: 0.5rem 0 0.25rem; }
+  &--chat { padding: 2rem; }
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  margin: 0 auto;
+  border: 3px solid var(--ink-3);
+  border-top-color: var(--coral);
+  border-radius: 50%;
+  animation: spin 600ms linear infinite;
+  &--lg { width: 44px; height: 44px; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// ---------- chat ----------
+.chat {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.5rem 0.25rem;
+}
+
+.bubble {
+  max-width: 82%;
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius);
+  line-height: 1.45;
+  p { margin: 0; white-space: pre-wrap; word-break: break-word; }
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
+  @starting-style { opacity: 0; transform: translateY(6px); }
+
+  &--toDevice {
+    align-self: flex-end;
+    background: var(--coral);
+    color: #2b1712;
+    border-bottom-right-radius: 6px;
+  }
+  &--fromDevice {
+    align-self: flex-start;
+    background: var(--ink-2);
+    border: 1px solid var(--ink-3);
+    border-bottom-left-radius: 6px;
+  }
+}
+
+.composer {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.75rem 0 calc(0.75rem + env(safe-area-inset-bottom));
+  input {
+    flex: 1;
+    font: inherit;
+    color: var(--text);
+    background: var(--ink-2);
+    border: 1.5px solid var(--ink-3);
+    border-radius: 999px;
+    padding: 0.8rem 1.2rem;
+    outline: none;
+    transition: border-color 150ms ease;
+    &:focus { border-color: var(--coral); }
+  }
+  .btn--send { padding: 0.8rem 1.15rem; }
+}
+
+// ---------- provisionamento ----------
+.prov-progress {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: var(--text-dim);
+  h2 { color: var(--text); margin-top: 1.25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .device-card { animation-duration: 1ms; }
+  .bubble, .login__card { transition-property: opacity; }
+  .device-card__status--online { animation: none; }
+}
