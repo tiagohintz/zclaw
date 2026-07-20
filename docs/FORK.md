@@ -45,7 +45,7 @@ expõe e que o app deve implementar.
   "llm_key": "chave de API do provedor LLM",
   "llm_backend": "anthropic | openai | openrouter | ollama",
   "llm_model": "modelo (opcional, usa default do firmware se ausente)",
-  "llm_api_url": "URL customizada da API do LLM (opcional; vale para qualquer provedor)",
+  "llm_api_url": "URL customizada da API (opcional; base tipo https://gw.exemplo/v1 — o firmware anexa /messages ou /chat/completions conforme o provedor — ou URL completa)",
   "ws_url": "wss://servidor/device-ws (canal websocket do app; fase firmware pendente)",
   "ws_token": "credencial emitida por devices.create no servidor do app"
 }
